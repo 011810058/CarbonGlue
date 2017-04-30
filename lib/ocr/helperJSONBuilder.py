@@ -1,11 +1,17 @@
+import re
 import pytesseract
 from PIL import Image
 
-class HelperJSONBuilder:
-    def __init__(self):
-        print "init function"
+from ..config import initConfig
+
+class HelperJSONBuilder(initConfig.InitConfig):
+
+    def __init__(self): #, _studentID
+        print "init fn: HelperJSONBuilder"
         # add gradespan and subjectCodeSpan variable 
+        #self.studentID = _studentID
         self.gradeTuple = ('UA', 'UG', 'UE', 'GR', 'GP')
+        
 
     def performOCR(self, imagePath):
         srcImage = Image.open(imagePath)#"./images/test0_198.jpg"
@@ -18,14 +24,11 @@ class HelperJSONBuilder:
         srcTextByLine = self.formatOCRTextAndHeader(srcText)
         for lineText in srcTextByLine:
             gradeRecord = self.extractSubjectWithGrades(lineText)
-            print gradeRecord
+            #print gradeRecord
             subjectByGrade.append(gradeRecord)
         return subjectByGrade
     
-    # def getSemester(self, imagePath):
-    #     srcText = self.performOCR(imagePath)
-    #     srcText = self.formatOCRTextAndHeader(srcText, removeHeader = False)
-    #     print srcText 
+
         
     def extractSubjectWithGrades(self, gradePerSubject, subjectCodeSpan = 2, gradeSpan = 5):
         #Function to extract Subject Code, Subject Name and Grades 
@@ -34,7 +37,7 @@ class HelperJSONBuilder:
         subjectName = ''
         extractValues = gradePerSubject.split()
         extractValueCount = len(extractValues)
-        print "extractValueCount " + str(extractValueCount)
+        #print "extractValueCount " + str(extractValueCount)
         for index, fieldValue in list(enumerate(extractValues)):
             if(index < subjectCodeSpan):
                 subjectCode += fieldValue
@@ -57,6 +60,15 @@ class HelperJSONBuilder:
     def removeNumCharDotSpace(self, formatText):
         #Function to remove spacing between number and (.)
         print "To be implemented later"
+            # for text in srcText:
+            # text = text.replace(' ','$')
+            # i = re.finditer('$\d+$.$\d',text)
+            # indices = [(m.start(0), m.end(0)) for m in i]
+            
+            # for start,end in indices:
+            #      print text[start : end].replace(' ','')
+            # print text
+        
 
     def formatOCRTextAndHeader(self, formatText, removeHeader = True):
         #self.removeNumCharDotSpace(formatText)
@@ -66,10 +78,22 @@ class HelperJSONBuilder:
         if removeHeader:
             del formatTextByLine[0]
         return formatTextByLine
+    
     #def run(self):
+    
+    def getSemester(self, imagePath, includeMajor = True):
+        srcText = self.performOCR(imagePath)
+        srcText = self.formatOCRTextAndHeader(srcText, removeHeader = False)
+        current = 0
+        major = {}
+        semester = {}
+        while current < len(srcText):
+            if current == 0:
+                semester = {"Semester" : srcText[current]}
+            if includeMajor and current > 1 :
+                major = {"Major" : re.sub('MAJOR:\s','', srcText[current])}
+            current += 1
+        return semester, major    
 
-if __name__ == "__main__":
-    helperJSONBuilder = HelperJSONBuilder()
-    helperJSONBuilder.getSemester("./images/test0_0.jpg")
-    #helperJSONBuilder.generateSubjectByGradeList("./images/test0_198.jpg")
-    #helperJSONBuilder.generateSubjectByGradeList("./images/test0_872.jpg")
+# if __name__ == "__main__":
+#     #helperJSONBuilder.generateSubjectByGradeList("./images/test0_872.jpg")
