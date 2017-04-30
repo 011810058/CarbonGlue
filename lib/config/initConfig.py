@@ -7,6 +7,7 @@ class InitConfig(object):
     # Upload image will be processed and saved into .png format with same name
     transcriptName = 'template1.jpg'
     tempDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "temp")
+    templatesDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "templates")
     cropImageFolderName = "sample"
     cropFileInitials = "sample"
     contourImageName = "contoured.png"
