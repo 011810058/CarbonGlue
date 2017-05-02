@@ -13,7 +13,14 @@ class InitConfig(object):
     cropFileInitials = "sample"
     contourImageName = "contoured.png"
     #Move this template sequence to json file and load json object 
-    templateSequence = {'template1':{'1' : 'Semester.png', '2' : 'Subject.png'}}
+    templateSequence = {'template1':{'0': 'dummy.png', '1' : 'Semester.png', '2' : 'Subject.png'},
+                        'template2':{
+                            '0' : 'dummy.png',
+                            '1': 'Semester_1.png',
+                            '2': 'Subject_1.png',
+                            '3': 'Semester_2.png',
+                            '4': 'Subject_2.png',
+                        }}
     
 
        

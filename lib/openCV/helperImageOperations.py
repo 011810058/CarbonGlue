@@ -94,7 +94,6 @@ class HelperImageOperations(initConfig.InitConfig):
         listTemplateDir = os.listdir(self.templatesDir) #can we better name to variable directories like listTemplateDir
         del listTemplateDir[0] #What we are trying to achieve with this del ??
 
-        print listTemplateDir
         template = self.templateInitials
         check = False
         i = 0
