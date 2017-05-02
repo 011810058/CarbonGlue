@@ -123,7 +123,7 @@ class HelperImageOperations(initConfig.InitConfig):
                 template = template + str(i)
                 check = True
                 break
-
+        #the input template is not found in the list of specified templates
         if False == check:
             template = "not present"
 
