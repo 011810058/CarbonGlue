@@ -15,13 +15,13 @@ class HelperImageOperations(initConfig.InitConfig):
     (This function will be later modified to support various templates) 
     ### - represent functionality still need to be implemented 
     '''
-    def cropImagePerContours(self, studentID, imageTemplateName = "template1"):
+    def cropImagePerContours(self, studentID, imageTemplateName = "template1", cropIntoContours = True):
         ###Check that the directory exists else exception
         ###Delete if the sample folder already exists
 
         print "fn: cropImagePerContours Student ID: " + studentID
         srcImagePath = os.path.join(self.tempDir, studentID, self.transcriptName)
-        self.findContoursAndSplit(srcImagePath, imageTemplateName, cropIntoContours = True, contourX = 15, contourY = 6)
+        self.findContoursAndSplit(srcImagePath, imageTemplateName, cropIntoContours, contourX = 15, contourY = 6)
 
     '''
     Function to find contours in an provide image(transcript) and cropping the image as per contours.
