@@ -24,11 +24,11 @@ class Template1(HelperJSONBuilder):
             for file_name in os.listdir(cropImagePath):
                 cropImageFileName = os.path.join(cropImagePath, file_name)
                 
-                if file_name == selectedSequence['1']:
+                if file_name == selectedSequence['0']:
                     semester_1, major = self.getSemester(cropImageFileName)
                     studentRecord.update(major)
 
-                elif (file_name == selectedSequence['2']): 
+                elif (file_name == selectedSequence['1']): 
                     subjectByGrade = self.generateSubjectByGradeList(cropImageFileName)
                     studentRecord['Semester1']= semester_1
                     studentRecord['Semester1']['Subjects'] = subjectByGrade
