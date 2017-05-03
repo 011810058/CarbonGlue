@@ -91,7 +91,7 @@ class HelperImageOperations(initConfig.InitConfig):
 
     def getTemplateName(self, studentID):
 
-        listTemplateDir = os.listdir(self.templatesDir) #can we better name to variable directories like listTemplateDir
+        listTemplateDir = os.listdir(self.templatesDir) 
         del listTemplateDir[0] #What we are trying to achieve with this del ??
 
         template = self.templateInitials
@@ -122,6 +122,7 @@ class HelperImageOperations(initConfig.InitConfig):
                 template = os.path.join(template,str(i))
                 check = True
                 break
+
         #the input template is not found in the list of specified templates
         if False == check:
             template = "not present"
