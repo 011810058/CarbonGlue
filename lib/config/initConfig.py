@@ -8,12 +8,16 @@ class InitConfig(object):
     transcriptName = 'template1.png'
     tempDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "temp")
     templatesDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "templates")
+    
     templateInitials = "template"
     cropImageFolderName = "sample"
     cropFileInitials = "sample"
     contourImageName = "contoured.png"
     #Move this template sequence to json file and load json object 
-    templateSequence = {'template1':{'0': 'dummy.png', '1' : 'Semester.png', '2' : 'Subject.png'},
+    templateSequence = {'template1':{
+                            '0' : 'Semester.png', 
+                            '1' : 'Subject.png'
+                            },
                         'template2':{
                             '0' : 'dummy.png',
                             '1': 'Semester_1.png',
@@ -21,6 +25,10 @@ class InitConfig(object):
                             '3': 'Semester_2.png',
                             '4': 'Subject_2.png',
                         }}
-    databaseTitle = 'carbonglue' #Name of database which will be created
+    databaseName = 'db_carbon_glue' #Name of database which will be created
+    collectionName = 'col_student_records'
+    supportedImageExtensions = '*.png' #*.jpg
+
+    DEBUG = True
 
        
