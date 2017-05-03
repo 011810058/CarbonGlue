@@ -29,9 +29,8 @@ class HelperImageOperations(initConfig.InitConfig):
     def findContoursAndSplit(self, srcImagePath, imageTemplateName, cropIntoContours = True, contourX = 15, contourY = 6):
 
         selectedSequence = self.templateSequence[imageTemplateName]
-        selectedTemplateValues = list(selectedSequence.values())
         print "fn: findContoursAndSplit Image Path: " + srcImagePath
-        print "The sequence {%s} selected for {%s}" % (', '.join(selectedTemplateValues), imageTemplateName)
+        print "The sequence {%s} selected for {%s}" % (selectedSequence, imageTemplateName)
         srcImageDir = os.path.dirname(srcImagePath)
         srcImage = cv2.imread(srcImagePath)
         gray = cv2.cvtColor(srcImage,cv2.COLOR_BGR2GRAY) # grayscale
@@ -56,10 +55,12 @@ class HelperImageOperations(initConfig.InitConfig):
                 roi = srcImage[y:y+h, x:x+w]
                 #cropImageName = self.cropFileInitials + '_' + str(x) + '_' + str(y) +'.png'
 
-                if index >= len(selectedTemplateValues):
-                    print "Warning: The sequence specified by admin is exhausted " + str(index)
+                if index >= len(selectedSequence.keys()):
+                    print "Warning: The sequence specified by admin is reached " + str(index)
                     break
-
+                
+                if self.DEBUG:
+                    print "%s --> %s" % (str(index), selectedSequence[str(index)]) 
                 cropImageName = selectedSequence[str(index)]
                 cropImagePath = os.path.join(cropImageDir, cropImageName)
                 index += 1
@@ -74,6 +75,8 @@ class HelperImageOperations(initConfig.InitConfig):
                 cv2.imwrite(contourPath, srcImage)
 
     def verifyImagePattern(self, srcImagePath, patternImagePath):
+        print "fn verifyPatternImage: for source %s and pattern %s" % (srcImagePath, patternImagePath)
+
         srcImage = cv2.imread(srcImagePath, cv2.COLOR_RGB2GRAY)
         patternImage = cv2.imread(patternImagePath, cv2.COLOR_RGB2GRAY)
         #x, y, z = template.shape[::]
@@ -90,41 +93,49 @@ class HelperImageOperations(initConfig.InitConfig):
 
 
     def getTemplateName(self, studentID):
+        print "fn getTemplateName: for studentID %s" % studentID
+        try:
+            listTemplateDir = os.listdir(self.templatesDir) 
 
-        listTemplateDir = os.listdir(self.templatesDir) 
-        del listTemplateDir[0] #What we are trying to achieve with this del ??
+            template = self.templateInitials
+            check = False
+            i = 0
 
-        template = self.templateInitials
-        check = False
-        i = 0
+            print "%s folders in %s" % (listTemplateDir, self.templatesDir)
+            for templateFolder in listTemplateDir:
+                dirname = os.path.join(self.templatesDir, templateFolder)
+                os.chdir(dirname)
 
-        for templateFolder in listTemplateDir:
-            dirname = os.path.join(self.templatesDir, templateFolder)
-            os.chdir(dirname)
+                templateImages = glob.glob(self.supportedImageExtensions)
+                check = True
+                i = i + 1
 
-            templateImages = glob.glob("*.jpg")
-            check = True
-            i = i + 1
+                for image in templateImages:
+                    patternImageName = os.path.join(templateFolder, image)
 
-            for image in templateImages:
-                patternImageName = os.path.join(templateFolder, image)
+                    if self.DEBUG:
+                        print "Source Image Path %s" % srcImage
+                        print "Pattern Image Path %s" % patternImage
+                    srcImage = os.path.join(self.tempDir, studentID, self.transcriptName)
+                    patternImage = os.path.join(self.templatesDir, patternImageName)
+                    match = self.verifyImagePattern(srcImage, patternImage)
+                    if not match :
+                        check = False
+                        break
 
-                srcImage = os.path.join(self.tempDir, studentID, self.transcriptName)
-                patternImage = os.path.join(self.templatesDir, patternImageName)
-                match = self.verifyImagePattern(srcImage, patternImage)
-                if not match :
-                    check = False
+                if False == check:
+                    continue
+                else:
+                    template = template + str(i)
+                    check = True
                     break
 
+            #the input template is not found in the list of specified templates
             if False == check:
-                continue
-            else:
-                template = os.path.join(template,str(i))
-                check = True
-                break
+                return False, ''
+                #template = "not present"
 
-        #the input template is not found in the list of specified templates
-        if False == check:
-            template = "not present"
-
-        return template
+            return True, template
+        except Exception as ex:
+            print ex.message
+            raise ex
