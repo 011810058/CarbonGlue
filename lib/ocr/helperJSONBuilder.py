@@ -11,11 +11,11 @@ class HelperJSONBuilder(initConfig.InitConfig):
         # add gradespan and subjectCodeSpan variable 
         #self.studentID = _studentID
         self.gradeTuple = ('UA', 'UG', 'UE', 'GR', 'GP')
-        
+        self.gradeDataTypeDict = {'UA': 'float', 'UG': 'float', 'UE': 'float', 'GR': 'string', 'GP': 'float'}
 
     def performOCR(self, imagePath):
         srcImage = Image.open(imagePath)#"./images/test0_198.jpg"
-        srcText = pytesseract.image_to_string(srcImage) #config = "-psm 6" parameter can be removed 
+        srcText = pytesseract.image_to_string(srcImage, config = "-psm 6") #parameter can be removed 
         return srcText
 
     def generateSubjectByGradeList(self, imagePath):
@@ -27,8 +27,6 @@ class HelperJSONBuilder(initConfig.InitConfig):
             #print gradeRecord
             subjectByGrade.append(gradeRecord)
         return subjectByGrade
-    
-
         
     def extractSubjectWithGrades(self, gradePerSubject, subjectCodeSpan = 2, gradeSpan = 5):
         #Function to extract Subject Code, Subject Name and Grades 
@@ -52,7 +50,12 @@ class HelperJSONBuilder(initConfig.InitConfig):
                 actualValues["name"] = subjectName
 
             if(extractValueCount-index <= gradeSpan):
-                actualValues[self.gradeTuple[gradeSpan-(extractValueCount-index)]] = fieldValue 
+                grade = self.gradeTuple[gradeSpan-(extractValueCount-index)]
+                gradeDataType = self.gradeDataTypeDict[grade]
+                if (gradeDataType == 'float'): 
+                    fieldValue = float(fieldValue) 
+
+                actualValues[grade] = fieldValue
                 #.decode('utf-8')
 
         return actualValues
@@ -93,7 +96,7 @@ class HelperJSONBuilder(initConfig.InitConfig):
             if includeMajor and current > 1 :
                 major = {"Major" : re.sub('MAJOR:\s','', srcText[current])}
             current += 1
-        return semester, major    
+        return semester, major
 
 # if __name__ == "__main__":
 #     #helperJSONBuilder.generateSubjectByGradeList("./images/test0_872.jpg")
