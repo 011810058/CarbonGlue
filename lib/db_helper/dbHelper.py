@@ -3,7 +3,7 @@
 from pymongo import MongoClient
 from ..config.initConfig import InitConfig
 
-class DBHelper():
+class DBHelper(InitConfig):
     """ Performs MongoDB related functions """
 
     def __init__(self):
@@ -12,7 +12,7 @@ class DBHelper():
     def getCollection(self, colName):
         """ Return the PyMongo collection object based on given collection name """
         client = MongoClient()
-        db = client[InitConfig.databaseTitle]
+        db = client[self.databaseTitle]
         coll = db[colName]
         return coll
 
@@ -20,7 +20,7 @@ class DBHelper():
         """ This method takes a string in json formate and stores it 
         as json object in MongoDB """
         print type(jsonFormatString)
-        coll = self.getCollection('student2345')
+        coll = self.getCollection(self.collectionName)
 
         DOC_ID = coll.insert_one(jsonFormatString).inserted_id
         print DOC_ID
@@ -30,7 +30,7 @@ class DBHelper():
     def findInDB(self):
         """ Find matching document in collection based on given keys values """
         
-        coll = self.getCollection('student2345')
+        coll = self.getCollection(self.collectionName)
 
         query = {"studentID":"1234", "$and":[{"Semester1.Subjects": \
                 {"$elemMatch":{"code":"CMPE202", "GP":{"$gte":5}, \

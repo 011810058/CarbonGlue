@@ -22,5 +22,5 @@ class InitConfig(object):
                             '4': 'Subject_2.png',
                         }}
     databaseTitle = 'carbonglue' #Name of database which will be created
-
+    collectionName = 'studentRecord' #Name of collection to hold student data
        
