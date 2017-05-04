@@ -15,13 +15,13 @@ class HelperImageOperations(initConfig.InitConfig):
     (This function will be later modified to support various templates) 
     ### - represent functionality still need to be implemented 
     '''
-    def cropImagePerContours(self, studentID, imageTemplateName = "template1", cropIntoContours = True):
+    def cropImagePerContours(self, studentID, imageTemplateName = "template1", cropIntoContours = True, contourX = 15, contourY = 6):
         ###Check that the directory exists else exception
         ###Delete if the sample folder already exists
 
         print "fn: cropImagePerContours Student ID: " + studentID
         srcImagePath = os.path.join(self.tempDir, studentID, self.transcriptName)
-        self.findContoursAndSplit(srcImagePath, imageTemplateName, cropIntoContours, contourX = 15, contourY = 6)
+        self.findContoursAndSplit(srcImagePath, imageTemplateName, cropIntoContours, contourX, contourY)
 
     '''
     Function to find contours in an provide image(transcript) and cropping the image as per contours.
@@ -53,15 +53,18 @@ class HelperImageOperations(initConfig.InitConfig):
             #print x,y,w,h
             if cropIntoContours:
                 roi = srcImage[y:y+h, x:x+w]
-                #cropImageName = self.cropFileInitials + '_' + str(x) + '_' + str(y) +'.png'
 
-                if index >= len(selectedSequence.keys()):
-                    print "Warning: The sequence specified by admin is reached " + str(index)
-                    break
-                
-                if self.DEBUG:
-                    print "%s --> %s" % (str(index), selectedSequence[str(index)]) 
-                cropImageName = selectedSequence[str(index)]
+                if self.ADMIN:
+                    cropImageName = self.cropFileInitials + '_' + str(x) + '_' + str(y) +'.png'
+                else:
+                    if index >= len(selectedSequence.keys()):
+                        print "Warning: The sequence specified by admin is reached " + str(index)
+                        break
+                    
+                    if self.DEBUG:
+                        print "%s --> %s" % (str(index), selectedSequence[str(index)]) 
+                    cropImageName = selectedSequence[str(index)]
+
                 cropImagePath = os.path.join(cropImageDir, cropImageName)
                 index += 1
                 cv2.imwrite(cropImagePath, roi)
@@ -75,7 +78,7 @@ class HelperImageOperations(initConfig.InitConfig):
                 cv2.imwrite(contourPath, srcImage)
 
     def verifyImagePattern(self, srcImagePath, patternImagePath):
-        print "fn verifyPatternImage: for source %s and pattern %s" % (srcImagePath, patternImagePath)
+        print "fn verifyPatternImage: %s <--> %s" % (srcImagePath, patternImagePath)
 
         srcImage = cv2.imread(srcImagePath, cv2.COLOR_RGB2GRAY)
         patternImage = cv2.imread(patternImagePath, cv2.COLOR_RGB2GRAY)
@@ -96,6 +99,8 @@ class HelperImageOperations(initConfig.InitConfig):
         print "fn getTemplateName: for studentID %s" % studentID
         try:
             listTemplateDir = os.listdir(self.templatesDir) 
+            if listTemplateDir[0] == '.DS_Store':
+                del listTemplateDir[0]
 
             template = self.templateInitials
             check = False
@@ -113,11 +118,13 @@ class HelperImageOperations(initConfig.InitConfig):
                 for image in templateImages:
                     patternImageName = os.path.join(templateFolder, image)
 
+                    srcImage = os.path.join(self.tempDir, studentID, self.transcriptName)
+                    patternImage = os.path.join(self.templatesDir, patternImageName)
+                    
                     if self.DEBUG:
                         print "Source Image Path %s" % srcImage
                         print "Pattern Image Path %s" % patternImage
-                    srcImage = os.path.join(self.tempDir, studentID, self.transcriptName)
-                    patternImage = os.path.join(self.templatesDir, patternImageName)
+
                     match = self.verifyImagePattern(srcImage, patternImage)
                     if not match :
                         check = False

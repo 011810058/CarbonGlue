@@ -27,8 +27,9 @@ class InitConfig(object):
                         }}
     databaseName = 'db_carbon_glue' #Name of database which will be created
     collectionName = 'col_student_records'
-    supportedImageExtensions = '*.png' #*.jpg
+    supportedImageExtensions = '*.*' #*.jpg
 
-    DEBUG = True
+    DEBUG = False
+    ADMIN = False
 
        
