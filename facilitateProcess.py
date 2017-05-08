@@ -8,7 +8,9 @@ from lib.openCV.helperImageOperations import HelperImageOperations
 from lib.ocr.helperJSONBuilder import HelperJSONBuilder
 from lib.config.initConfig import InitConfig
 from lib.db_helper.dbHelper import DBHelper
+from lib.mail.sendMail import SendMail
 from lib.templates import *
+
 
 class FacilitateProcess(object):
    
@@ -18,6 +20,7 @@ class FacilitateProcess(object):
         self.templateObject = {'template1': template1.Template1(), 'template2': template2.Template2()}
         self.dbHelper = DBHelper()
         self.helperImageOperations = HelperImageOperations()
+        self.sendMail = SendMail()
 
     '''
     upload function: perform all steps to indentify template, crop, ocr, generate dict and store to DB 
@@ -43,18 +46,24 @@ class FacilitateProcess(object):
            
             print "Step 4: Store information into database"
             result = self.dbHelper.storeInDB(resultJSON)
+            print result
 
-            # if result:
-            #     #implement code to send mail to the studentID
-            # else:
-            #     #send mail to user to contact admin as upload transcript fail 
-             
+            self.sendMail.loginToGmail();
+
+            if result:
+                print "send mail to the instructor"
+                self.sendMail.sendMailToInstructor(studentID)
+            else:
+                print "send mail to user to contact admin as upload transcript fail"
+                self.sendMail.sendMailToAdmin(studentID)
+
         except Exception as ex:
             raise ex
 
-# if __name__ == "__main__":
-#     facilitateProcess = FacilitateProcess()
-#     facilitateProcess.upload('1234')
+if __name__ == "__main__":
+     facilitateProcess = FacilitateProcess()
+#     facilitateProcess.sendmail();
+     facilitateProcess.upload('1122')
 
 
         
