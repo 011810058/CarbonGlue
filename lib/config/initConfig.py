@@ -35,6 +35,8 @@ class InitConfig(object):
     password = "test@273"
     googleServer = 'smtp.gmail.com'
     googlePort = 587
+    carbonGlue_mail = 'carbonglue273@gmail.com'
+    carbonGlue_pass = 'password@1990'
 
     DEBUG = False
     ADMIN = False
@@ -48,4 +50,6 @@ class InitConfig(object):
     code = "code"
     grade_point = "GP"
     secret_key = "abhishek-jasmeet-parag-vinayak"
+
+    temp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"lib/openCV/temp/")
     
