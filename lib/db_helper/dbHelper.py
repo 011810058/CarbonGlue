@@ -8,31 +8,26 @@ class DBHelper(initConfig.InitConfig):
     """ Performs MongoDB related functions """
 
     def __init__(self):
-        print "fn init: DBHelper"
         self.mongoClient = MongoClient()
 
-    def getCollection(self, collectionName):
+    def getCollection(self, collection_name):
         """ Return the PyMongo collection object based on given collection name """
-        print "fn getCollection: %s" % collectionName
         db = self.mongoClient[self.databaseName]
-        coll = db[collectionName]
+        coll = db[collection_name]
         return coll
 
-    def storeInDB(self, jsonFormatString, collectionName = None):
-        """ This method takes a string in json formate and stores it 
-        as json object in MongoDB """
+    def storeInDB(self, json_formate_string, collection_name = None):
+        """ This method takes a string in json formate and stores it as json object in MongoDB """
         try:
             success = True
-            if type(jsonFormatString) is not dict:
-                print "Invalid string type provided"
+            if isinstance(json_formate_string, dict) is False:
                 success = False
-               
-            if collectionName is None:
-                collectionName = self.collectionName
+            if collection_name is None:
+                collection_name = self.collection_name
 
-            selectedCollection = self.getCollection(collectionName)
-            key = {"studentID" : jsonFormatString.pop("studentID",None)}
-            update_query = {"$set" : jsonFormatString}
+            selectedCollection = self.getCollection(collection_name)
+            key = {self.studentID : json_formate_string.pop(self.studentID,None)}
+            update_query = {self.set_string : json_formate_string}
             documentID = selectedCollection.update_one(key,update_query, upsert=True).upserted_id
             if documentID is None:  
                 raise "Exception MongoDB: Insert record failed..!!"
@@ -40,19 +35,10 @@ class DBHelper(initConfig.InitConfig):
             return success
             
         except Exception as ex:
-            print ex.message
             raise ex
         
     def findInDB(self, query):
-        """ Find matching document in collection based on given keys values """
-        
-        coll = self.getCollection(self.collectionName)
-
-        # query = {"studentID":"1234", "$and":[{"Semester1.Subjects": \
-        #         {"$elemMatch":{"code":"CMPE202", "GP":{"$gte":5}, \
-        #         "GR":{"$in": ["A","A+", "A-", "B", "B+", "B-"]}}}},\
-        #         {"Semester1.Subjects":{"$elemMatch":{"code":"CMPE273", "GP":{"$gte":5}, \
-        #         "GR":{"$in": ["A","A+", "A-", "B", "B+", "B-"]}}}}]}
-        # return coll.find(query).count()
+        """ Find matching document in collection based on given keys values """ 
+        coll = self.getCollection(self.collection_name)
         return coll.find_one(query)
             

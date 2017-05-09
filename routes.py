@@ -1,46 +1,38 @@
 from flask import Flask, render_template, request
 from searchForm import SearchForm
 from lib.db_helper.dbHelper import DBHelper
+from lib.config.initConfig import InitConfig 
 app = Flask(__name__)
 
 
-app.secret_key = "abhishek-jasmeet-parag-vinayak"
+app.secret_key = InitConfig.secret_key
 
-@app.route("/search", methods=["GET", "POST"])
+@app.route("/search", methods=[InitConfig.get_string, InitConfig.post_string])
 def search():
-	form = SearchForm()
+    """ Handles GET and POST on search form"""
+    form = SearchForm()
+    if request.method == InitConfig.post_string:
+        if form.validate() is False:
+            return render_template("/search.html", form=form)
+        else:
+            query = {InitConfig.studentID:str(form.studentId.data)}
+            subject_code = str(form.subjectCode.data)
+            grade_point = float(form.gradePoint.data)
+            document = DBHelper.findInDB(DBHelper(), query)
+            if document is None:
+                return "No data for this student exists"
+            else:
+                keys = document.keys()
+                for key in keys:
+                    if InitConfig.semester in key:
+                        for subject in document[key][InitConfig.subjects]:
+                            if subject_code == subject[InitConfig.code] and subject[InitConfig.grade_point] >= grade_point:
+                                return "Student has cleared this Prerequisit"
+                            else:
+                                return "Student has failed to clear this Prerequisit"
 
-	if request.method == "POST":
-		print "From POST"
-		if form.validate() == False:
-			return render_template("/search.html", form=form)
-		else:
-			query = {"studentID":str(form.studentId.data)}
-			subject_code = str(form.subjectCode.data)
-			gradePoint = float(form.gradePoint.data)
-			# if(form.gradePoint.data != ''):
-			# 	query["Semester1.Subjects"]= {'$elemMatch':{'code':subject_code,'GP':{'$gte':float(form.gradePoint.data)}}}
-			# else:
-			# 	query["Semester1.Subjects"] = {'$elemMatch':{'code':subject_code}}
-			print query
-			document = DBHelper.findInDB(DBHelper(), query)
-			if document is None :
-				return "No data for this student exists"
-			else:
-				 keys = document.keys()
-				 for key in keys:
-					 if "Semester" in key:
-						for subject in document[key]["Subjects"]:
-							if subject_code == subject["code"] and gradePoint >= subject["GP"]:
-								return "Student has cleared this Prerequisit"
-							else:
-								return "Student has failed to clear this Prerequisit"
-
-			
-			
-			
-	elif request.method == "GET":
-	    return render_template("/search.html", form=form)
+    elif request.method == InitConfig.get_string:
+        return render_template("/search.html", form=form)
 
 if __name__ == "__main__":
-		app.run(debug=True)
+    app.run(debug=True)

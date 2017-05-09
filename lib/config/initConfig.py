@@ -27,10 +27,10 @@ class InitConfig(object):
                         }}
 
     databaseName = 'db_carbon_glue' #Name of database which will be created
-    collectionName = 'col_student_records'
+    collection_name = 'col_student_records'
     supportedImageExtensions = '*.*' #*.jpg
     email = "prerequisite273project@gmail.com" # the mail which our app will use for sending the mail
-    instructorEmail ="abhi3003thapar@gmail.com" # the mail of the instructor
+    instructorEmail = "abhi3003thapar@gmail.com" # the mail of the instructor
     adminEmail = "abhi3003thapar@gmail.com"
     password = "test@273"
     googleServer = 'smtp.gmail.com'
@@ -39,4 +39,13 @@ class InitConfig(object):
     DEBUG = False
     ADMIN = False
 
-      
+    studentID = "studentID"
+    set_string = "$set"
+    get_string = "GET"
+    post_string = "POST"
+    semester = "Semester"
+    subjects = "Subjects"
+    code = "code"
+    grade_point = "GP"
+    secret_key = "abhishek-jasmeet-parag-vinayak"
+    
