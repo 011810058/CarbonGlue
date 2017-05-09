@@ -28,8 +28,15 @@ class InitConfig(object):
 
     databaseName = 'db_carbon_glue' #Name of database which will be created
     collectionName = 'col_student_records'
-    supportedImageExtensions = '*.png' #*.jpg
+    supportedImageExtensions = '*.*' #*.jpg
+    email = "prerequisite273project@gmail.com" # the mail which our app will use for sending the mail
+    instructorEmail ="abhi3003thapar@gmail.com" # the mail of the instructor
+    adminEmail = "abhi3003thapar@gmail.com"
+    password = "test@273"
+    googleServer = 'smtp.gmail.com'
+    googlePort = 587
 
-    DEBUG = True
+    DEBUG = False
+    ADMIN = False
 
       
