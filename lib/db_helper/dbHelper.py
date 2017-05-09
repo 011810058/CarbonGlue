@@ -31,8 +31,9 @@ class DBHelper(initConfig.InitConfig):
                 collectionName = self.collectionName
 
             selectedCollection = self.getCollection(collectionName)
-
-            documentID = selectedCollection.insert_one(jsonFormatString).inserted_id
+            key = {"studentID" : jsonFormatString.pop("studentID",None)}
+            update_query = {"$set" : jsonFormatString}
+            documentID = selectedCollection.update_one(key,update_query, upsert=True).upserted_id
             if documentID is None:  
                 raise "Exception MongoDB: Insert record failed..!!"
 
@@ -42,15 +43,16 @@ class DBHelper(initConfig.InitConfig):
             print ex.message
             raise ex
         
-    def findInDB(self):
+    def findInDB(self, query):
         """ Find matching document in collection based on given keys values """
         
         coll = self.getCollection(self.collectionName)
 
-        query = {"studentID":"1234", "$and":[{"Semester1.Subjects": \
-                {"$elemMatch":{"code":"CMPE202", "GP":{"$gte":5}, \
-                "GR":{"$in": ["A","A+", "A-", "B", "B+", "B-"]}}}},\
-                {"Semester1.Subjects":{"$elemMatch":{"code":"CMPE273", "GP":{"$gte":5}, \
-                "GR":{"$in": ["A","A+", "A-", "B", "B+", "B-"]}}}}]}
-        print coll.find(query).count()
+        # query = {"studentID":"1234", "$and":[{"Semester1.Subjects": \
+        #         {"$elemMatch":{"code":"CMPE202", "GP":{"$gte":5}, \
+        #         "GR":{"$in": ["A","A+", "A-", "B", "B+", "B-"]}}}},\
+        #         {"Semester1.Subjects":{"$elemMatch":{"code":"CMPE273", "GP":{"$gte":5}, \
+        #         "GR":{"$in": ["A","A+", "A-", "B", "B+", "B-"]}}}}]}
+        # return coll.find(query).count()
+        return coll.find_one(query)
             
