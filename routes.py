@@ -6,13 +6,13 @@ from flask_errormail import mail_on_500
 from searchForm import SearchForm
 from lib.db_helper.dbHelper import DBHelper
 from lib.config.initConfig import InitConfig 
-from lib.openCV.helperImageOperations import HelperImageOperations
+from facilitateProcess import FacilitateProcess
 
 ADMINISTRATORS = [
     InitConfig.carbonGlue_mail,
 ]
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder = "html_templates")
 
 app.secret_key = InitConfig.secret_key
 
@@ -30,7 +30,7 @@ app.config.update(
 
 mail = Mail(app)
 
-UPLOAD_FOLDER_DESTINATION = InitConfig.temp_path
+UPLOAD_FOLDER_DESTINATION = os.path.join(os.path.dirname(os.path.abspath(__file__)),"temp")
 
 
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpeg', 'jpg'])
@@ -75,9 +75,7 @@ def upload_document():
 
     mail.send(msg)
     
-    HelperImageOperations.cropImagePerContours(HelperImageOperations(),studentID)
-
-    return render_template('uploadpage.html')
+    return render_template('uploadpage.html'), FacilitateProcess.upload(FacilitateProcess(), studentID)
 
 @app.errorhandler(404)
 def pageNotFound(error):
