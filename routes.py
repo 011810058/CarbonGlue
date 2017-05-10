@@ -81,11 +81,11 @@ def upload_document():
 def pageNotFound(error):
     return "page not found"
 
-@app.route("/search", methods=[InitConfig.get_string, InitConfig.post_string])
+@app.route("/search", methods=["GET", "POST"])
 def search():
     """ Handles GET and POST on search form"""
     form = SearchForm()
-    if request.method == InitConfig.post_string:
+    if request.method == "POST":
         if form.validate() is False:
             return render_template("/search.html", form=form)
         else:
@@ -105,7 +105,7 @@ def search():
                             else:
                                 return "Student has failed to clear this Prerequisit"
 
-    elif request.method == InitConfig.get_string:
+    elif request.method == "GET":
         return render_template("/search.html", form=form)
 
     
