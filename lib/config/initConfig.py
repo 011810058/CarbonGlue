@@ -1,58 +1,50 @@
 '''
 InitConfig: This file contains all the configuration variables 
 '''
-import os, sys
+import os, sys, json
 
 class InitConfig(object):
-    # Upload image will be processed and saved into .png format with same name
-    transcriptName = 'template1.png'
-    tempDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "temp")
-    templatesDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "templates")
-    
-    # tempDir = "/home/parag/Documents/sithu-aung-273/CarbonGlue/temp"
-    # templatesDir = "/home/parag/Documents/sithu-aung-273/CarbonGlue/templates"
+    try:
+        DEBUG = True
+        ADMIN = False
+        tempDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "temp")
+        templatesDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "templates")
+        
+        with open("config/config.json") as json_file:
+            configVal = json.load(json_file)
 
-    templateInitials = "template"
-    cropImageFolderName = "sample"
-    cropFileInitials = "sample"
-    contourImageName = "contoured.png"
-    #Move this template sequence to json file and load json object 
-    templateSequence = {'template1':{
-                            '0' : 'Semester.png', 
-                            '1' : 'Subject.png'
-                            },
-                        'template2':{
-                            '0' : 'dummy.png',
-                            '1': 'Semester_1.png',
-                            '2': 'Subject_1.png',
-                            '3': 'Semester_2.png',
-                            '4': 'Subject_2.png',
-                        }}
+        with open("config/templateConfig.json") as json_file:
+            templateSequence = json.load(json_file)
 
-    databaseName = 'db_carbon_glue' #Name of database which will be created
-    collection_name = 'col_student_records'
-    supportedImageExtensions = '*.*' #*.jpg
-    email = "prerequisite273project@gmail.com" # the mail which our app will use for sending the mail
-    instructorEmail = "abhi3003thapar@gmail.com" # the mail of the instructor
-    adminEmail = "abhi3003thapar@gmail.com"
-    password = "test@273"
-    googleServer = 'smtp.gmail.com'
-    googlePort = 587
-    carbonGlue_mail = 'carbonglue273@gmail.com'
-    carbonGlue_pass = 'password@1990'
+        transcriptName = configVal["transcriptName"] 
 
-    DEBUG = False
-    ADMIN = False
+        templateInitials = configVal["templateInitials"] 
+        cropImageFolderName = configVal["cropImageFolderName"] 
+        cropFileInitials = configVal["cropFileInitials"] 
+        contourImageName = configVal["contourImageName"] 
+        supportedImageExtensions = configVal["supportedImageExtensions"] 
+     
+        email = configVal["email"] # the mail which our app will use for sending the mail
+        instructorEmail = configVal["instructorEmail"] # the mail of the instructor
+        adminEmail = configVal["adminEmail"]
+        password = configVal["password"]
+        googleServer = configVal["googleServer"]
+        googlePort = configVal["googlePort"]
+        carbonGlue_mail = configVal["carbonGlue_mail"]
+        carbonGlue_pass = configVal["carbonGlue_pass"]
 
-    studentID = "studentID"
-    set_string = "$set"
-    get_string = "GET"
-    post_string = "POST"
-    semester = "Semester"
-    subjects = "Subjects"
-    code = "code"
-    grade_point = "GP"
-    secret_key = "abhishek-jasmeet-parag-vinayak"
+        databaseName = configVal["databaseName"] #Name of database which will be created
+        collection_name = configVal["collection_name"]
+        studentID = configVal["studentID"]
+        set_string = configVal["set_string"]
+        semester = configVal["semester"]
+        subjects = configVal["subjects"]
+        code = configVal["code"]
+        grade_point = configVal["grade_point"]
+        secret_key = configVal["secret_key"]
 
-    #temp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"temp")
+    except Exception as ex:
+        print ex.message
+        sys.exit("Verify: Configuration files missing!!")
+
     

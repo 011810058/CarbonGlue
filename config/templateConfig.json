@@ -1,0 +1,11 @@
+{"template1":{
+    "0" : "Semester.png", 
+    "1" : "Subject.png"
+    },
+"template2":{
+    "0" : "dummy.png",
+    "1": "Semester_1.png",
+    "2": "Subject_1.png",
+    "3": "Semester_2.png",
+    "4": "Subject_2.png"
+}}

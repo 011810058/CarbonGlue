@@ -99,6 +99,8 @@ class HelperImageOperations(initConfig.InitConfig):
         print "fn getTemplateName: for studentID %s" % studentID
         try:
             listTemplateDir = os.listdir(self.templatesDir) 
+            listTemplateDir.sort()
+            
             if listTemplateDir[0] == '.DS_Store':
                 del listTemplateDir[0]
 
