@@ -91,7 +91,9 @@ def search():
         else:
             query = {InitConfig.studentID:str(form.studentId.data)}
             subject_code = str(form.subjectCode.data)
-            grade_point = float(form.gradePoint.data)
+            form_grade_point = str(form.gradePoint.data)
+            if form_grade_point != "":
+                grade_point = float(form.gradePoint.data)
             document = DBHelper.findInDB(DBHelper(), query)
             if document is None:
                 return "No data for this student exists"
@@ -100,15 +102,17 @@ def search():
                 for key in keys:
                     if InitConfig.semester in key:
                         for subject in document[key][InitConfig.subjects]:
-                            if subject_code == subject[InitConfig.code] and subject[InitConfig.grade_point] >= grade_point:
-                                return "Student has cleared this Prerequisit"
-                            else:
-                                return "Student has failed to clear this Prerequisit"
-
+                            if subject_code.lower() == subject[InitConfig.code].lower():
+                                if form_grade_point != "":
+                                    if grade_point >= subject[InitConfig.grade_point]:
+                                        return "Student has cleared this Prerequisit"
+                                    else:
+                                        return "Student has failed to clear this Prerequisit"
+                                else:
+                                    return "Student has earned %f grade points in %s" % (subject[InitConfig.grade_point], subject_code)
+                return "Student has not taken %s"% subject_code
     elif request.method == "GET":
         return render_template("/search.html", form=form)
-
-    
 
 if __name__ == "__main__":
     app.run(debug=True)

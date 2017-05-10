@@ -1,4 +1,24 @@
-.error-msg  {
-				color: #db4437;
+.error-msg {
+    color: #db4437;
+}
 
-			 }
+.form-container .heading {
+    margin: auto;
+    width: 50%;
+    border: 3px, solid, black;
+    padding: 10px;
+    background-color: grey;
+}
+
+.heading {
+    background-color: black;
+    color: white
+}
+
+.button {
+    display: inline-block;
+}
+
+body {
+    background-color: black;
+}
