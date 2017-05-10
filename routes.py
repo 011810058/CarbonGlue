@@ -1,4 +1,5 @@
 import os
+import threading
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
 from flask_mail import Mail, Message
@@ -75,7 +76,10 @@ def upload_document():
 
     mail.send(msg)
     
-    return render_template('uploadpage.html'), FacilitateProcess.upload(FacilitateProcess(), studentID)
+    facilitateProcess = FacilitateProcess(studentID)
+    facilitateProcess.start()
+
+    return render_template('uploadpage.html') 
 
 @app.errorhandler(404)
 def pageNotFound(error):
