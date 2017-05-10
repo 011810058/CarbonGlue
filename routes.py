@@ -5,16 +5,14 @@ from flask_mail import Mail, Message
 from flask_errormail import mail_on_500
 from searchForm import SearchForm
 from lib.db_helper.dbHelper import DBHelper
-from lib.config.initConfig import InitConfig
-from facilitateProcess import FacilitateProcess
-
-tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'html_templates')
+from lib.config.initConfig import InitConfig 
+from lib.openCV.helperImageOperations import HelperImageOperations
 
 ADMINISTRATORS = [
     InitConfig.carbonGlue_mail,
 ]
 
-app = Flask(__name__, template_folder = tmpl_dir)
+app = Flask(__name__)
 
 app.secret_key = InitConfig.secret_key
 
@@ -32,11 +30,10 @@ app.config.update(
 
 mail = Mail(app)
 
-UPLOAD_FOLDER_DESTINATION = os.path.join(os.path.dirname(os.path.abspath(__file__)),"temp")
+UPLOAD_FOLDER_DESTINATION = InitConfig.temp_path
 
 
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpeg', 'jpg'])
-
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -47,6 +44,7 @@ def uploadpage():
     return render_template('uploadpage.html')
 
 @app.route('/upload', methods=['POST'])
+
 def upload_document():
 
   #get the student id from the html
@@ -63,7 +61,6 @@ def upload_document():
     if file and allowed_file(file.filename):
         # Save file in the designated uploads folder
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], InitConfig.transcriptName))
-        isSaved = True
         # Redirect the user to the uploaded_file route, which will basicaly show on the browser the uploaded file
         #return redirect(url_for('uploaded_file',filename=filename))
 
@@ -77,20 +74,22 @@ def upload_document():
     )
 
     mail.send(msg)
-    return render_template('uploadpage.html'), FacilitateProcess.upload(FacilitateProcess(), studentID)
+    
+    HelperImageOperations.cropImagePerContours(HelperImageOperations(),studentID)
 
+    return render_template('uploadpage.html')
 
 @app.errorhandler(404)
 def pageNotFound(error):
     return "page not found"
 
-@app.route("/search", methods=["GET", "POST"])
+@app.route("/search", methods=[InitConfig.get_string, InitConfig.post_string])
 def search():
     """ Handles GET and POST on search form"""
     form = SearchForm()
-    if request.method == "POST":
+    if request.method == InitConfig.post_string:
         if form.validate() is False:
-            return render_template("/search.html", form=form) 
+            return render_template("/search.html", form=form)
         else:
             query = {InitConfig.studentID:str(form.studentId.data)}
             subject_code = str(form.subjectCode.data)
@@ -108,7 +107,7 @@ def search():
                             else:
                                 return "Student has failed to clear this Prerequisit"
 
-    elif request.method == "GET":
+    elif request.method == InitConfig.get_string:
         return render_template("/search.html", form=form)
 
     
