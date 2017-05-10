@@ -9,6 +9,9 @@ class InitConfig(object):
     tempDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "temp")
     templatesDir = os.path.join(os.path.dirname(sys.modules['__main__'].__file__), "templates")
     
+    # tempDir = "/home/parag/CarbonGlue/temp"
+    # templatesDir = "/home/parag/CarbonGlue/templates"
+
     templateInitials = "template"
     cropImageFolderName = "sample"
     cropFileInitials = "sample"
@@ -43,13 +46,11 @@ class InitConfig(object):
 
     studentID = "studentID"
     set_string = "$set"
-    get_string = "GET"
-    post_string = "POST"
     semester = "Semester"
     subjects = "Subjects"
     code = "code"
     grade_point = "GP"
     secret_key = "abhishek-jasmeet-parag-vinayak"
 
-    temp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"lib/openCV/temp/")
+    #temp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"temp")
     
