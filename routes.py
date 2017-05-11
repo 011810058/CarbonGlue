@@ -113,7 +113,7 @@ def search():
                                     else:
                                         return "Student has failed to clear this Prerequisit"
                                 else:
-                                    return "Student has earned %f grade points in %s" % (subject[InitConfig.grade_point], subject_code)
+                                    return "Student has earned %.2f grade points in %s" % (subject[InitConfig.grade_point], subject_code)
                 return "Student has not taken %s"% subject_code
     elif request.method == "GET":
         return render_template("/search.html", form=form)
