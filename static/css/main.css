@@ -2,23 +2,46 @@
     color: #db4437;
 }
 
-.form-container .heading {
-    margin: auto;
-    width: 50%;
-    border: 3px, solid, black;
-    padding: 10px;
-    background-color: grey;
-}
-
 .heading {
     background-color: black;
     color: white
 }
 
-.button {
+#submit {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
     display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
 }
 
-body {
+
+/*body {
     background-color: black;
+}*/
+
+.container,
+.heading {
+    margin: auto;
+    width: 50%;
+    border: 3px, solid, black;
+    padding: 10px;
+    background-color: #772929;
+}
+
+label {
+    color: green;
+    font-weight: bold;
+    display: block;
+    width: 150px;
+    float: left;
+}
+
+label:after {
+    content: ": "
 }

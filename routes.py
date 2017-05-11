@@ -108,7 +108,7 @@ def search():
                         for subject in document[key][InitConfig.subjects]:
                             if subject_code.lower() == subject[InitConfig.code].lower():
                                 if form_grade_point != "":
-                                    if grade_point >= subject[InitConfig.grade_point]:
+                                    if subject[InitConfig.grade_point] >= grade_point:
                                         return "Student has cleared this Prerequisit"
                                     else:
                                         return "Student has failed to clear this Prerequisit"
